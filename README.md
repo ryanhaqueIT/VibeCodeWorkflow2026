@@ -1,5 +1,13 @@
 # VibeCodeWorkflow2026
 
+
+## VibeCode Lifecycle
+
+![alt text](image-1.png)
+
+![alt text](image.png)
+
+
 ## Workflow
 
 ```text
