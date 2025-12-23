@@ -19,20 +19,22 @@ This workflow automates the 15-step VibeCode Lifecycle. It integrates Steve Yegg
 - Ensure boundaries are clear before proceeding.
 
 ### Step 1: Discovery
-- Ask the user clarifying questions until requirements and edge cases are clear.
+- ALWAYS generate a mandatory questionnaire to clarify requirements and edge cases.
 - Output: Requirements list + edge cases.
+
 
 ### Step 2: spec.md
 // turbo
 - Run `gitingest` to study the repository.
 - Consolidate requirements, architecture, and test strategy into `spec.md`.
 
-### Step 3: plan.md
-- Produce a step-by-step plan with milestones and DOD.
-- Store as `.agent/workflows/vibe-plan.md`.
+### Step 3: Beads Plan (`bd create`)
+- Use the codebase context to generate a structured plan.
+- **Action**: For each task, run `bd create "[ID]: [Title]" -p 0`.
+- **Action**: Link dependencies with `bd dep add <child> <parent>`.
 
 ### Step 4: Critique
-- Spawn a subagent to critique `plan.md` for risks and sequencing gaps.
+- Spawn a subagent to critique the bead sequence for risks and gaps.
 
 ### Step 5: Rules & Guardrails
 - Ensure `rules.md` (or equivalent) exists with project conventions.
@@ -41,22 +43,24 @@ This workflow automates the 15-step VibeCode Lifecycle. It integrates Steve Yegg
 
 ## 2. Execution Phase (Step N)
 
-### Step 6: Select Task
-- Select the next focused task (bead) from `vibe-plan.md`.
+### Step 6: Select Bead
+- Run `bd ready` and select the next available task.
+- **Action**: Run `bd update <id> --status in_progress`.
 
 ### Step 7: Context Packing
 // turbo
-- Use `gitingest` with specific patterns to dump a tailored subset of the repo for the current task.
-- Include relevant docs and API snippets.
+- ALWAYS perform a full repo scrape via `gitingest` to provide an overall view.
+- List all files and their roles.
 
 ### Step 8: Implementation
-- Implement changes for the selected task using the packed context.
+- Implement changes for the selected bead only.
 
 ### Step 9: Verification
-- Run tests and checks (automated loop). Iterate until green.
+- Run tests and checks. Iterate until the bead's DOD is met.
 
-### Step 10: State Sync
-- Update `.agent/work/vibe-state.json` once the task is verified.
+### Step 10: Bead Completion
+- **Action**: Run `bd close <id>`.
+- Update state in `.agent/work/vibe-state.json`.
 
 ---
 

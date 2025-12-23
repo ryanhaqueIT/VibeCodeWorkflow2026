@@ -1,5 +1,30 @@
-# VibeCodeWorkflow2026
+# VibeCode Lifecycle Automation
 
+This project automates the **VibeCode Lifecycle**, a disciplined 15-step workflow for high-context coding.
+
+## 🚀 Automation & Distribution
+
+We have implemented a portable, agent-agnostic **Skill** and **Infrastructure** to automate this lifecycle.
+
+### 1. Requirements
+Ensure you have the following tools installed:
+- **Beads CLI** (`bd`): For git-backed task tracking.
+  - `go install github.com/steveyegge/beads/cmd/bd@latest`
+- **GitIngest**: For repo-wide context mapping.
+  - `pip install gitingest`
+
+### 2. The Skills Folder
+Core logic is located in `/skills`:
+- **[`vibecode-lifecycle`](file:///c:/Users/ryanh/VibeCodeWorkflow2026/skills/vibecode-lifecycle/SKILL.md)**: The 15-step controller.
+- **[`beads-utility`](file:///c:/Users/ryanh/VibeCodeWorkflow2026/skills/beads-utility/SKILL.md)**: Teaches agents how to manage state via Beads.
+
+### 3. Convenience Scripts
+Use these scripts to automate the most complex parts:
+- `.\scripts\pack-context.ps1`: Automates **Step 7** (Context Packing).
+- `.\scripts\sync-vibe.ps1`: Automates **Step 10** (State Sync + Bead Closing).
+- `.\scripts\bundle-skills.ps1`: Bundles everything for distribution.
+
+---
 
 ## VibeCode Lifecycle
 

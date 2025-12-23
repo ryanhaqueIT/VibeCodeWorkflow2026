@@ -19,16 +19,16 @@ The authoritative skill definition resides in [context-dev/SKILL.md](file:///c:/
 
 ## Lifecycle Automation Summary
 
-| Phase | Step | Activity | Skill Instruction / Tool Usage |
+| Step | Activity | Skill Instruction / Tool Usage |
 | :--- | :--- | :--- |
 | **0-1** | Discovery | **LLM Reasoning**: Enforces deep discovery. |
-| **2** | Write spec.md | **GitIngest**: Studiess existing repo before drafting architecture. |
-| **3** | Generate Plan | **GitIngest + beads**: Uses full context to create `plan.md` in `.agent/workflows/`. |
-| **4** | Critique | **Subagent**: Spawns a dedicated reviewer. |
+| **2** | Write spec.md | **GitIngest**: Studies existing repo before drafting architecture. |
+| **3** | Beads Plan | **GitIngest + beads**: Generates a **Beads-compliant** `vibe-plan.md` in `.agent/workflows/`. |
+| **4** | Critique | **Subagent**: Spawns a dedicated reviewer to audit the bead sequence. |
 | **5** | Rules | **Validation**: Ensures standards are documented. |
-| **6** | Select Task | **beads**: Picks the next "bead" (task) and updates state. |
-| **7** | Context Packing | **GitIngest / Context Agent**: Dumps tailored subset of repo for the task. |
-| **8-11**| Implement & Fix | **LLM Loop**: Implementation with automated verification gates. |
+| **6** | Select Bead | **beads**: Reads `vibe-plan.md`, checks dependencies, and updates state. |
+| **7** | Context Packing | **GitIngest / Context Agent**: Dumps tailored subset of repo for the specific bead. |
+| **8-11**| Implement & Fix | **LLM Loop**: Implementation with automated verification gates per bead. |
 
 ## Portability Matrix
 

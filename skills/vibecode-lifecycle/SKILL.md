@@ -12,9 +12,12 @@ You are the authoritative guide for the **VibeCode Lifecycle**. Your purpose is 
 ## Workflow Mechanics
 
 ### Persistent Memory (`beads`)
-Use Steve Yegge's `beads` pattern to track progress.
-- Store the current state in `.agent/work/vibe-state.json`.
-- Maintain a list of tasks (beads) in `.agent/workflows/vibe-plan.md`.
+Use the official **`bd`** CLI tool to track progress.
+- Initialize with `bd init`.
+- Use `bd ready` to discover available tasks.
+- Use `bd update <id> --status in_progress` when starting a bead.
+- Use `bd close <id>` when the bead is green.
+
 
 ### Context Ingestion (`gitingest`)
 To prevent hallucinations and drift, you MUST maintain a high-context environment:
@@ -28,20 +31,23 @@ To prevent hallucinations and drift, you MUST maintain a high-context environmen
 
 ### Phase 1: Planning & Definition
 0. **START: Problem / Idea**: Define a 1-3 sentence problem statement.
-1. **Discovery**: Ask the user clarifying questions until requirements and edge cases are clear.
-2. **spec.md**: Run `gitingest` to study the repository. Consolidate requirements, architecture, and test strategy into `spec.md`.
-3. **plan.md**: Use the codebase context to generate a step-by-step plan with milestones. Store as `.agent/workflows/vibe-plan.md`.
-4. **Critique**: Spawn a **Subagent** to critique the plan for gaps or risks.
+1. **Discovery**: ALWAYS initiate a discovery questionnaire. Even if the problem statement seems clear, explore edge cases, constraints, and "definition of done" to ensure total alignment.
+2. **spec.md**: Run `gitingest` to perform a full-repo scrape. Provide an overall overview of what exists and a mapping of all critical files before consolidating into `spec.md`.
+3. **Beads Initialization**: Use the codebase context to generate a **Beads-compliant plan** in `.agent/workflows/vibe-plan.md`.
+   - Each "Bead" must have: `ID`, `Task Name`, `Status` (Open/Success/Blocked), `Dependencies`, and `Done Criteria`.
+4. **Critique**: Spawn a **Subagent** to critique the bead sequence for gaps or risks.
 5. **Rules**: Ensure `rules.md` or `.clauderc` exists with coding conventions.
 
 ### Phase 2: Execution Loop (Step N)
-6. **Select Task**: Use `beads` logic to pick the next small, focused task from the plan.
+6. **Select Bead**: Run `bd ready`. Pick the highest priority task.
+   - Run `bd update <id> --status in_progress`.
 7. **Context Packing Agent**: Enter a sub-agent mode (or use yourself) to "pack context".
-   - Use `gitingest` with include/exclude patterns to dump the relevant subset of the repo.
-   - Include relevant docs, API snippets, and known pitfalls.
-8. **Implement**: Generate code changes for the selected task only, using the packed context.
-9. **Verify**: Run tests and checks (automated loop). Iterate with the user if failures occur.
-10. **State Management**: Update `.agent/work/vibe-state.json` once a task is green.
+   - ALWAYS perform a comprehensive repo scrape via `gitingest` to maintain an "overall" view of the system.
+   - Summarize the file tree and critical interfaces.
+8. **Implement**: Generate code changes for the selected bead only.
+9. **Verify**: Run tests and checks. 
+10. **State Management**: Run `bd close <id>` once the bead is verified.
+
 
 ### Phase 3: Quality & Persistence
 12. **Human Review**: Present the diff and explain the logic for human approval.
