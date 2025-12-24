@@ -1,11 +1,17 @@
 param (
     [Parameter(Mandatory=$true)]
     [string]$BeadId,
-    [string]$Message = "Task completed."
+    [string]$Message = "Task completed.",
+    [switch]$Approved
 )
 
+if (-not $Approved) {
+    Write-Error "Bead $BeadId cannot be synced until the -Approved switch is used (Representing Step 12 Human Review)."
+    exit 1
+}
+
 # 1. Close the bead in official Beads CLI
-Write-Host "Closing bead $BeadId..." -ForegroundColor Cyan
+Write-Host "Closing bead $BeadId after Human Approval..." -ForegroundColor Cyan
 & $HOME\go\bin\bd.exe close $BeadId
 
 # 2. Update the vibe-state.json

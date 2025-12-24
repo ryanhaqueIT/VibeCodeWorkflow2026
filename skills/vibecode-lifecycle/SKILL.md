@@ -19,11 +19,11 @@ Use the official **`bd`** CLI tool to track progress.
 - Use `bd close <id>` when the bead is green.
 
 
-### Context Ingestion (`gitingest`)
+### Context Ingestion (`GitIngest` & `Exa`)
 To prevent hallucinations and drift, you MUST maintain a high-context environment:
-1. **Planning Ingestion**: Before generating `spec.md` (Step 2) or `plan.md` (Step 3) in an existing repository, run `gitingest` to understand the current architecture.
-2. **Task Ingestion**: During Step 7 (Context Packing), run `gitingest` focused on the specific files and interfaces relevant to the current task bead.
-- Store results in `context-pack.md` or as a block in your context.
+1. **Planning Ingestion**: Before generating `spec.md` (Step 2) or `plan.md` (Step 3), run `mcp_exa_get_code_context_exa` to fetch best practices and `list_dir` to understand the current architecture.
+2. **Task Ingestion**: During Step 7 (Context Packing), perform a targeted audit of relevant files.
+3. **Subagent Invocation**: Use subagents (e.g., `browser_subagent` for UI beads or mental sub-loops for logic) to perform independent reviews.
 
 ---
 
@@ -31,8 +31,14 @@ To prevent hallucinations and drift, you MUST maintain a high-context environmen
 
 ### Phase 1: Planning & Definition
 0. **START: Problem / Idea**: Define a 1-3 sentence problem statement.
-1. **Discovery**: ALWAYS initiate a discovery questionnaire. Even if the problem statement seems clear, explore edge cases, constraints, and "definition of done" to ensure total alignment.
-2. **spec.md**: Run `gitingest` to perform a full-repo scrape. Provide an overall overview of what exists and a mapping of all critical files before consolidating into `spec.md`.
+1. **Discovery**: ALWAYS initiate a discovery questionnaire. 
+   - **Action**: Intelligently analyze the user's prompt and ask for specific documentation or clarifications (e.g., Business Logic, Data Schemas, Architecture diagrams) that are missing but required for **extremely clear** requirements.
+   - **Goal**: Do not blindly accept a vague prompt. Your job is to ensure the user has provided enough context to minimize hallucinations and rework. 
+2. **spec.md (The Source of Truth)**: 
+   - **Primary Mode**: The `spec.md` should ideally be provided by the user. 
+   - **Feedback Agency**: Your role is to **critique** the user's `spec.md`. Identify missing requirements, technical contradictions, or unaddressed edge cases. 
+   - **Assisted Drafting**: If the user does not have a spec, you may draft one, but it MUST be treated as an unverified proposal until the user provides deep edits or approval.
+   - **Continuous Verification**: Run `gitingest` to verify that the `spec.md` aligns with the actual repository state.
 3. **Beads Initialization**: Use the codebase context to generate a **Beads-compliant plan** in `.agent/workflows/vibe-plan.md`.
    - Each "Bead" must have: `ID`, `Task Name`, `Status` (Open/Success/Blocked), `Dependencies`, and `Done Criteria`.
 4. **Critique**: Spawn a **Subagent** to critique the bead sequence for gaps or risks.
@@ -41,19 +47,29 @@ To prevent hallucinations and drift, you MUST maintain a high-context environmen
 ### Phase 2: Execution Loop (Step N)
 6. **Select Bead**: Run `bd ready`. Pick the highest priority task.
    - Run `bd update <id> --status in_progress`.
-7. **Context Packing Agent**: Enter a sub-agent mode (or use yourself) to "pack context".
-   - ALWAYS perform a comprehensive repo scrape via `gitingest` to maintain an "overall" view of the system.
-   - Summarize the file tree and critical interfaces.
+7. **Context Packing Agent**: Enter a sub-agent mode.
+    - **Action**: Use `mcp_exa_get_code_context_exa` to gather external patterns (e.g., "financial dashboard best practices").
+    - **Action**: Perform a "Mental Sub-Audit" by listing all files and state (from previous beads) being carried over.
+    - **Output**: You MUST generate or update a `context-pack.md` for the bead.
 8. **Implement**: Generate code changes for the selected bead only.
-9. **Verify**: Run tests and checks. 
-10. **State Management**: Run `bd close <id>` once the bead is verified.
+9. **Verify (The Technical Gate)**: Run tests and checks. Iterate with **Step 11 (Debug Loop)** until green.
+   - **Constraint**: You MUST explain the verification logic to the user. Do not just say "tests passed". Explain *what* was tested and *why* it proves correctness.
+10. **GREEN Check**: Proceed to Step 12 ONLY if all tests and linters pass.
+11. **Debug Loop**: If not green, use logs/traces to fix. Return to Step 9.
 
 
-### Phase 3: Quality & Persistence
-12. **Human Review**: Present the diff and explain the logic for human approval.
-13. **Second Review**: (Optional) Use a different model to audit the changes.
-14. **Commit**: perform a small, atomic git commit with a clear message.
-15. **Loop**: If tasks remain in `plan.md`, return to Step 6. Otherwise, initiate PR/merge.
+### Phase 3: Accountability & Persistence
+12. **Human Review (The Accountability Gate)**: 
+    - **Action**: Present the diff and explain the logic in business/technical terms.
+    - **HITL Requirement**: You MUST ask the user to verify the logic and (ideally) run the verification script themselves. 
+    - **Detailed Code Breakdown**: You MUST provide a step-by-step breakdown of the code changes, explaining *what* each major block does and *why* it was written that way.
+    - **Comprehension Check**: You MUST ask the user if they understand the implementation. If they have questions, you must answer them before proceeding.
+    - **Gate**: DO NOT proceed to Step 14 until the user explicitly states they understand the code and approve the verification results.
+13. **Second Review**: (Optional) Use a different model to audit the changes for security or performance.
+14. **Completion & Commit**: 
+    - **Action**: Run `bd close <id>` ONLY AFTER human approval.
+    - **Action**: Perform an atomic git commit with a clear message.
+15. **Loop**: If tasks remain, return to Step 6.
 
 ---
 

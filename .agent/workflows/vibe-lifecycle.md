@@ -19,14 +19,15 @@ This workflow automates the 15-step VibeCode Lifecycle. It integrates Steve Yegg
 - Ensure boundaries are clear before proceeding.
 
 ### Step 1: Discovery
-- ALWAYS generate a mandatory questionnaire to clarify requirements and edge cases.
-- Output: Requirements list + edge cases.
-
+- ALWAYS generate a mandatory questionnaire.
+- **Action**: Intelligently request specific docs (Architecture, Logic, etc.) needed for absolute clarity based on the ask.
+- Output: User-approved Requirements list + Constraints.
 
 ### Step 2: spec.md
 // turbo
-- Run `gitingest` to study the repository.
-- Consolidate requirements, architecture, and test strategy into `spec.md`.
+- Run `gitingest` to verify repo start state.
+- **Primary Mode**: User provides `spec.md`. Agent role is to CRITIQUE and provide feedback/gap analysis.
+- Consolidate into a finalized, user-approved `spec.md`.
 
 ### Step 3: Beads Plan (`bd create`)
 - Use the codebase context to generate a structured plan.
@@ -58,9 +59,8 @@ This workflow automates the 15-step VibeCode Lifecycle. It integrates Steve Yegg
 ### Step 9: Verification
 - Run tests and checks. Iterate until the bead's DOD is met.
 
-### Step 10: Bead Completion
-- **Action**: Run `bd close <id>`.
-- Update state in `.agent/work/vibe-state.json`.
+### Step 11: Debug Loop
+- If technical verification fails, use logs to debug. Return to Step 9.
 
 ---
 
@@ -72,8 +72,10 @@ This workflow automates the 15-step VibeCode Lifecycle. It integrates Steve Yegg
 ### Step 13: Second Model Review
 - (Optional) Spawn a second subagent with a different model to audit the changes.
 
-### Step 14: Atomic Commit
-- Perform an atomic git commit with a structured message.
+### Step 14: Bead Completion & Commit
+- **Action**: Run `bd close <id>` only after approval.
+- **Action**: Run `.\scripts\sync-vibe.ps1 -BeadId <id> -Approved`.
+- **Action**: Perform an atomic git commit.
 
 ### Step 15: Loop or Merge
 - If tasks remain, return to Step 6. Otherwise, initiate PR/merge.
