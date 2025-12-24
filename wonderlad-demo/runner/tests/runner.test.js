@@ -80,6 +80,13 @@ async function main() {
   const statuses = listRes.body.sessions.map((s) => s.status);
   assert.ok(statuses.includes("success") || statuses.includes("running"), "unexpected status");
 
+  const beadsRes = await request("GET", "/beads");
+  assert.strictEqual(beadsRes.status, 200, "failed to list beads");
+  assert.ok(
+    Object.prototype.hasOwnProperty.call(beadsRes.body, "beads"),
+    "beads response missing beads field"
+  );
+
   const logs = fs.readdirSync(logDir).filter((name) => name.endsWith(".log"));
   assert.ok(logs.length >= 1, "expected log files to be created");
 

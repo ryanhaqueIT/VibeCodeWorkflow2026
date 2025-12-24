@@ -22,6 +22,7 @@ import { getMaestroConfig } from './utils/config';
 import type { MaestroConfig } from './utils/config';
 import { webLogger } from './utils/logger';
 import type { Theme } from '../shared/theme-types';
+import { OrchestratorShell } from './OrchestratorShell';
 
 /**
  * Context for offline status
@@ -192,6 +193,10 @@ export function App() {
   const [offline, setOffline] = useState(isOffline());
   const [desktopTheme, setDesktopTheme] = useState<Theme | null>(null);
   const config = useMemo(() => getMaestroConfig(), []);
+  const isShell = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('shell') === 'orchestrator';
+  }, []);
 
   const modeContextValue = useMemo(
     () => createMaestroModeContextValue(config),
@@ -247,9 +252,13 @@ export function App() {
             Once the desktop app sends a theme (via desktopTheme), it will override the device preference.
           */}
           <ThemeProvider theme={desktopTheme || undefined} useDevicePreference>
-            <Suspense fallback={<LoadingFallback />}>
-              <WebApp />
-            </Suspense>
+            {isShell ? (
+              <OrchestratorShell />
+            ) : (
+              <Suspense fallback={<LoadingFallback />}>
+                <WebApp />
+              </Suspense>
+            )}
           </ThemeProvider>
         </ThemeUpdateContext.Provider>
       </OfflineContext.Provider>
