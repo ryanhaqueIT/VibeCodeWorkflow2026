@@ -1,9 +1,9 @@
-| | |
-| --- | --- |
-| name | beads-utility |
-| description | A utility skill that teaches agents how to interact with the Beads memory system for stateful coding. |
-| license | MIT |
-| category | development-tools |
+---
+name: beads-utility
+description: A utility skill that teaches agents how to interact with the Beads memory system for stateful coding.
+license: MIT
+category: development-tools
+---
 
 # Beads Utility Skill
 
