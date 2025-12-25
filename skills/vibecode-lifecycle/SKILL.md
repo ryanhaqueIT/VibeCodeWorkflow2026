@@ -1,9 +1,9 @@
-| | |
-| --- | --- |
-| name | vibecode-lifecycle-controller |
-| description | A comprehensive workflow skill that automates the 15-step VibeCode Lifecycle using Beads for memory and GitIngest for context. |
-| license | MIT |
-| category | development-tools |
+---
+name: vibecode-lifecycle-controller
+description: A comprehensive workflow skill that automates the 15-step VibeCode Lifecycle using Beads for memory and GitIngest for context.
+license: MIT
+category: development-tools
+---
 
 # VibeCode Lifecycle Controller
 
