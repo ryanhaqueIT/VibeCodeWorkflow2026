@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeCode Lifecycle - 15-Step Workflow for High-Context AI Coding</title>
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES (THEME)
+           Change these to customize the entire look
+           =========================================== */
+        :root {
+            /* Colors */
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --gradient-1: #667eea;
+            --gradient-2: #764ba2;
+            --gradient-3: #f472b6;
+            --gradient-4: #06b6d4;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border: rgba(255, 255, 255, 0.1);
+
+            /* Typography */
+            --font-display: 'Cabinet Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+
+            /* Spacing */
+            --slide-padding: clamp(2rem, 6vw, 5rem);
+
+            /* Animation */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-normal: 0.6s;
+            --duration-slow: 0.8s;
+        }
+
+        /* ===========================================
+           BASE STYLES
+           =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ===========================================
+           ANIMATED BACKGROUND
+           Gradient mesh that subtly moves
+           =========================================== */
+        .gradient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(102, 126, 234, 0.25) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(118, 75, 162, 0.25) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 60%, rgba(244, 114, 182, 0.15) 0%, transparent 50%);
+            animation: meshMove 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes meshMove {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.1) rotate(2deg); opacity: 0.8; }
+        }
+
+        /* ===========================================
+           FLOATING ORBS
+           Decorative animated elements
+           =========================================== */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            top: -150px;
+            right: -150px;
+            opacity: 0.4;
+            animation: float1 12s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--gradient-3), var(--gradient-4));
+            bottom: -100px;
+            left: -100px;
+            opacity: 0.3;
+            animation: float2 15s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(40px, -20px); }
+        }
+
+        /* ===========================================
+           SLIDE CONTAINER
+           Each section is one full-screen slide
+           =========================================== */
+        .slide {
+            min-height: 100vh;
+            padding: var(--slide-padding);
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ===========================================
+           TYPOGRAPHY
+           =========================================== */
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-family: var(--font-display);
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 700px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, var(--gradient-1) 50%, var(--gradient-3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .accent { color: var(--gradient-1); }
+        .accent-pink { color: var(--gradient-3); }
+        .accent-cyan { color: var(--gradient-4); }
+
+        /* ===========================================
+           ANIMATIONS (Reveal on scroll)
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity var(--duration-normal) var(--ease-out-expo),
+                        transform var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger children */
+        .reveal:nth-child(1) { transition-delay: 0.1s; }
+        .reveal:nth-child(2) { transition-delay: 0.2s; }
+        .reveal:nth-child(3) { transition-delay: 0.3s; }
+        .reveal:nth-child(4) { transition-delay: 0.4s; }
+        .reveal:nth-child(5) { transition-delay: 0.5s; }
+        .reveal:nth-child(6) { transition-delay: 0.6s; }
+
+        /* ===========================================
+           GLASS CARDS
+           =========================================== */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        /* ===========================================
+           LISTS & CONTENT
+           =========================================== */
+        ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+        }
+
+        li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6em;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-3));
+        }
+
+        /* ===========================================
+           STEP CARDS (for workflow)
+           =========================================== */
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .step-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.3s var(--ease-smooth), border-color 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gradient-1);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-card h4 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ===========================================
+           PHASE BADGES
+           =========================================== */
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .badge-discovery {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(102, 126, 234, 0.1));
+            color: var(--gradient-1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .badge-planning {
+            background: linear-gradient(135deg, rgba(118, 75, 162, 0.2), rgba(118, 75, 162, 0.1));
+            color: var(--gradient-2);
+            border: 1px solid rgba(118, 75, 162, 0.3);
+        }
+
+        .badge-execution {
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.2), rgba(244, 114, 182, 0.1));
+            color: var(--gradient-3);
+            border: 1px solid rgba(244, 114, 182, 0.3);
+        }
+
+        .badge-review {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.1));
+            color: var(--gradient-4);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        /* ===========================================
+           CODE BLOCKS
+           =========================================== */
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .code-block .comment { color: var(--text-muted); }
+        .code-block .keyword { color: var(--gradient-3); }
+        .code-block .string { color: var(--gradient-4); }
+        .code-block .func { color: var(--gradient-1); }
+
+        /* ===========================================
+           TABLES
+           =========================================== */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+
+        td {
+            color: var(--text-secondary);
+        }
+
+        td code {
+            background: rgba(102, 126, 234, 0.15);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--gradient-1);
+        }
+
+        /* ===========================================
+           PROGRESS BAR
+           =========================================== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gradient-1), var(--gradient-3));
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* ===========================================
+           NAVIGATION DOTS
+           =========================================== */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot:hover {
+            background: var(--text-secondary);
+            transform: scale(1.2);
+        }
+
+        .nav-dot.active {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-3));
+            transform: scale(1.3);
+        }
+
+        /* ===========================================
+           KEYBOARD HINT
+           =========================================== */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            z-index: 100;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .keyboard-hint:hover { opacity: 1; }
+
+        .key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            padding: 0 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.75rem;
+        }
+
+        /* ===========================================
+           RESPONSIVE
+           =========================================== */
+        @media (max-width: 768px) {
+            .nav-dots,
+            .keyboard-hint {
+                display: none;
+            }
+
+            .step-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.75rem; }
+        }
+
+        /* ===========================================
+           REDUCED MOTION
+           =========================================== */
+        @media (prefers-reduced-motion: reduce) {
+            .reveal {
+                transition: opacity 0.3s ease;
+                transform: none;
+            }
+
+            .gradient-bg,
+            .orb {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background elements -->
+    <div class="gradient-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- Progress bar -->
+    <div class="progress-bar" id="progress"></div>
+
+    <!-- Navigation dots -->
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- Keyboard hint -->
+    <div class="keyboard-hint">
+        <span class="key">←</span>
+        <span class="key">→</span>
+        <span>or</span>
+        <span class="key">Space</span>
+        <span>to navigate</span>
+    </div>
+
+    <!-- ==================== SLIDE 1: TITLE ==================== -->
+    <section class="slide" data-slide="0">
+        <div class="slide-inner" style="text-align: center;">
+            <h1 class="reveal"><span class="gradient-text">VibeCode</span><br>Lifecycle</h1>
+            <p class="reveal" style="margin: 0 auto 2rem;">15-Step Workflow for High-Context AI Coding</p>
+            <div class="reveal glass-card" style="display: inline-block; padding: 1rem 2rem;">
+                <span style="color: var(--gradient-1); font-weight: 600;">Disciplined</span> &middot;
+                <span style="color: var(--gradient-2); font-weight: 600;">Reproducible</span> &middot;
+                <span style="color: var(--gradient-3); font-weight: 600;">Automated</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 2: THE PROBLEM ==================== -->
+    <section class="slide" data-slide="1">
+        <div class="slide-inner">
+            <h2 class="reveal">The <span class="accent-pink">Problem</span></h2>
+            <p class="reveal">AI coding without discipline leads to drift, hallucinations, and unmaintainable code.</p>
+            <ul class="reveal">
+                <li>Vague prompts cause inconsistent outputs</li>
+                <li>No shared understanding = rework and frustration</li>
+                <li>AI "sounds right" even when wrong</li>
+                <li>Context gets lost across sessions</li>
+                <li>No audit trail for AI-generated changes</li>
+            </ul>
+            <div class="reveal glass-card" style="margin-top: 2rem; max-width: 500px;">
+                <p style="color: var(--text-primary); font-weight: 500; font-size: 1rem;">
+                    "The VibeCode Lifecycle brings structure to chaos."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 3: OVERVIEW ==================== -->
+    <section class="slide" data-slide="2">
+        <div class="slide-inner">
+            <h2 class="reveal">The <span class="gradient-text">15-Step</span> Workflow</h2>
+            <p class="reveal">Four phases, one disciplined process.</p>
+            <div class="step-grid">
+                <div class="reveal glass-card">
+                    <span class="badge badge-discovery">Discovery</span>
+                    <h4>Steps 0-2</h4>
+                    <p>Define problem, clarify requirements, write spec.md</p>
+                </div>
+                <div class="reveal glass-card">
+                    <span class="badge badge-planning">Planning</span>
+                    <h4>Steps 3-5</h4>
+                    <p>Generate plan.md, critique & refine, set guardrails</p>
+                </div>
+                <div class="reveal glass-card">
+                    <span class="badge badge-execution">Execution</span>
+                    <h4>Steps 6-11</h4>
+                    <p>Small chunks, context pack, implement, test, debug</p>
+                </div>
+                <div class="reveal glass-card">
+                    <span class="badge badge-review">Review</span>
+                    <h4>Steps 12-15</h4>
+                    <p>Human review, second opinion, commit, iterate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 4: SETUP ==================== -->
+    <section class="slide" data-slide="3">
+        <div class="slide-inner">
+            <h2 class="reveal">Setup & <span class="accent">Requirements</span></h2>
+            <p class="reveal">Tools you'll need to get started.</p>
+            <div class="step-grid" style="margin-top: 2rem;">
+                <div class="reveal glass-card">
+                    <h4>Beads CLI</h4>
+                    <p>Git-backed task tracking</p>
+                    <div class="code-block">
+                        <span class="keyword">go install</span> github.com/steveyegge/beads/cmd/bd@latest
+                    </div>
+                </div>
+                <div class="reveal glass-card">
+                    <h4>GitIngest</h4>
+                    <p>Repo-wide context mapping</p>
+                    <div class="code-block">
+                        <span class="keyword">pip install</span> gitingest
+                    </div>
+                </div>
+            </div>
+            <div class="reveal" style="margin-top: 2rem;">
+                <h4 style="margin-bottom: 1rem;">Key Scripts</h4>
+                <ul>
+                    <li><code>pack-context.ps1</code> — Automates Step 7 (Context Packing)</li>
+                    <li><code>sync-vibe.ps1</code> — Automates Step 10 (State Sync)</li>
+                    <li><code>bundle-skills.ps1</code> — Bundles for distribution</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 5: DISCOVERY PHASE ==================== -->
+    <section class="slide" data-slide="4">
+        <div class="slide-inner">
+            <span class="reveal badge badge-discovery">Phase 1</span>
+            <h2 class="reveal">Discovery <span class="accent">Steps 0-2</span></h2>
+            <div class="step-grid">
+                <div class="reveal step-card">
+                    <div class="step-number">0</div>
+                    <h4>Problem Statement</h4>
+                    <p>Define boundaries in 1-3 sentences. Prevents vague prompting that causes drift.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">1</div>
+                    <h4>Outcome Discovery</h4>
+                    <p>"Ask me questions until requirements + edge cases are clear." Forces shared understanding.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">2</div>
+                    <h4>Write spec.md</h4>
+                    <p>Consolidate into spec.md: requirements, architecture, data model, test strategy.</p>
+                </div>
+            </div>
+            <div class="reveal glass-card" style="margin-top: 2rem;">
+                <p style="color: var(--text-primary);"><strong>Output:</strong> spec.md — your stable source of truth</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 6: PLANNING PHASE ==================== -->
+    <section class="slide" data-slide="5">
+        <div class="slide-inner">
+            <span class="reveal badge badge-planning">Phase 2</span>
+            <h2 class="reveal">Planning <span class="accent-pink">Steps 3-5</span></h2>
+            <div class="step-grid">
+                <div class="reveal step-card">
+                    <div class="step-number">3</div>
+                    <h4>Generate plan.md</h4>
+                    <p>Break work into small tasks with milestones + definition of done for each.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">4</div>
+                    <h4>Critique & Refine</h4>
+                    <p>Iteratively improve plan for gaps, risks, sequencing. Add test checklist per step.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">5</div>
+                    <h4>Set Guardrails</h4>
+                    <p>Create rules.md: coding conventions, forbidden patterns, "if unsure ask".</p>
+                </div>
+            </div>
+            <div class="reveal glass-card" style="margin-top: 2rem;">
+                <p style="color: var(--text-primary);"><strong>Why:</strong> Fix issues before code exists—cheaper than refactoring later</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 7: EXECUTION PHASE INTRO ==================== -->
+    <section class="slide" data-slide="6">
+        <div class="slide-inner" style="text-align: center;">
+            <span class="reveal badge badge-execution">Phase 3</span>
+            <h2 class="reveal" style="margin-top: 1rem;">Execution Loop<br><span class="accent-cyan">Steps 6-11</span></h2>
+            <p class="reveal" style="margin: 1rem auto 2rem;">Small chunks, focused prompts, tight feedback loops.</p>
+            <div class="reveal" style="font-size: 4rem; margin: 2rem 0;">
+                <span style="opacity: 0.3;">6</span> →
+                <span style="opacity: 0.5;">7</span> →
+                <span style="opacity: 0.7;">8</span> →
+                <span style="opacity: 0.85;">9</span> →
+                <span style="opacity: 0.95;">10</span> →
+                <span>11</span>
+                <span style="color: var(--gradient-3);"> ↺</span>
+            </div>
+            <p class="reveal" style="margin: 0 auto; font-size: 1rem;">
+                Select task → Pack context → Implement → Test → Debug → Repeat
+            </p>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 8: CONTEXT PACKING ==================== -->
+    <section class="slide" data-slide="7">
+        <div class="slide-inner">
+            <span class="reveal badge badge-execution">Step 7</span>
+            <h2 class="reveal">Context <span class="gradient-text">Packing</span></h2>
+            <p class="reveal">The secret sauce. Provide relevant context for THIS task only.</p>
+            <div class="step-grid">
+                <div class="reveal glass-card">
+                    <h4>What to Include</h4>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Files to modify/reference</li>
+                        <li>Invariants & non-goals</li>
+                        <li>Relevant docs / API snippets</li>
+                        <li>Pitfalls to avoid</li>
+                    </ul>
+                </div>
+                <div class="reveal glass-card">
+                    <h4>Tools</h4>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>gitingest</code> — Repo bundling</li>
+                        <li><code>Context7 MCP</code> — Live API docs</li>
+                        <li><code>Serena</code> — Symbolic navigation</li>
+                        <li><code>Chrome DevTools</code> — UI context</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="reveal glass-card" style="margin-top: 2rem;">
+                <p style="color: var(--text-primary);"><strong>Output:</strong> context-pack.md — focused context saves tokens, improves accuracy</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 9: IMPLEMENT & TEST ==================== -->
+    <section class="slide" data-slide="8">
+        <div class="slide-inner">
+            <span class="reveal badge badge-execution">Steps 8-11</span>
+            <h2 class="reveal">Implement → <span class="accent-cyan">Test</span> → Debug</h2>
+            <div class="step-grid">
+                <div class="reveal step-card">
+                    <div class="step-number">8</div>
+                    <h4>Implement Step N</h4>
+                    <p>Prompt includes: spec.md refs + plan step + rules.md + context-pack. Small diff only.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">9</div>
+                    <h4>Run Tests</h4>
+                    <p>Unit tests, lint, typecheck, build. Tests are the safety net—AI "sounds right" even when wrong.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">10</div>
+                    <h4>Green?</h4>
+                    <p>If YES → Human review. If NO → Debug loop with logs and traces.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">11</div>
+                    <h4>Debug Loop</h4>
+                    <p>Paste failures + traces; AI proposes fix; re-run. AI excels at iterate→test→fix.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 10: REVIEW & COMMIT ==================== -->
+    <section class="slide" data-slide="9">
+        <div class="slide-inner">
+            <span class="reveal badge badge-review">Phase 4</span>
+            <h2 class="reveal">Review & <span class="accent">Commit</span></h2>
+            <div class="step-grid">
+                <div class="reveal step-card">
+                    <div class="step-number">12</div>
+                    <h4>Human Review</h4>
+                    <p>Can you explain it? Is it simple/maintainable? Accountability gate.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">13</div>
+                    <h4>Second Model Review</h4>
+                    <p>Different model critiques diffs. "Second opinion" catches what first model missed.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">14</div>
+                    <h4>Commit</h4>
+                    <p>Small commit, clear message. Never commit what you can't explain. Audit trail.</p>
+                </div>
+                <div class="reveal step-card">
+                    <div class="step-number">15</div>
+                    <h4>Next Step?</h4>
+                    <p>More tasks in plan.md? Loop to Step 6. Done? PR/Merge with CI gates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 11: CLAUDE CODE ADAPTATIONS ==================== -->
+    <section class="slide" data-slide="10">
+        <div class="slide-inner">
+            <h2 class="reveal"><span class="gradient-text">Claude Code</span> Adaptations</h2>
+            <p class="reveal">Native task management replaces external tooling.</p>
+            <div class="table-wrapper reveal">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Original (Beads)</th>
+                            <th>Claude Code Equivalent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>bd init</code></td>
+                            <td>Not needed — tasks are session-scoped</td>
+                        </tr>
+                        <tr>
+                            <td><code>bd ready</code></td>
+                            <td><code>TaskList</code> tool</td>
+                        </tr>
+                        <tr>
+                            <td><code>bd update --status</code></td>
+                            <td><code>TaskUpdate</code> with status</td>
+                        </tr>
+                        <tr>
+                            <td><code>bd close</code></td>
+                            <td><code>TaskUpdate</code> status: "completed"</td>
+                        </tr>
+                        <tr>
+                            <td><code>.beads/interactions.jsonl</code></td>
+                            <td>Claude Code conversation context</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="reveal glass-card" style="margin-top: 1.5rem;">
+                <p style="color: var(--text-primary);"><strong>Benefits:</strong> Native parallel execution, no external CLI, tasks visible in UI</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 12: SKILLS INTEGRATION ==================== -->
+    <section class="slide" data-slide="11">
+        <div class="slide-inner">
+            <h2 class="reveal">Skills <span class="accent-pink">Integration</span></h2>
+            <p class="reveal">Invoke specialized skills at each phase.</p>
+            <div class="table-wrapper reveal">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Step</th>
+                            <th>Skill</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>3-4</td>
+                            <td><code>/plan</code></td>
+                            <td>Generate and critique plan.md</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td><code>/tdd</code></td>
+                            <td>Test-driven implementation</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td><code>/build-fix</code></td>
+                            <td>Automated test/lint loop</td>
+                        </tr>
+                        <tr>
+                            <td>12-13</td>
+                            <td><code>/code-review</code></td>
+                            <td>Human-readable review</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td><code>/checkpoint</code></td>
+                            <td>Safe commit with verification</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 13: MCP TOOLS ==================== -->
+    <section class="slide" data-slide="12">
+        <div class="slide-inner">
+            <h2 class="reveal">MCP Tools for <span class="accent-cyan">Context</span></h2>
+            <p class="reveal">Specialized servers enhance every step.</p>
+            <div class="step-grid">
+                <div class="reveal glass-card">
+                    <h4 style="color: var(--gradient-1);">Context7</h4>
+                    <p>Query up-to-date library documentation. Never code against stale APIs.</p>
+                </div>
+                <div class="reveal glass-card">
+                    <h4 style="color: var(--gradient-2);">Serena</h4>
+                    <p>Symbolic code navigation: find_symbol, find_referencing_symbols, semantic edits.</p>
+                </div>
+                <div class="reveal glass-card">
+                    <h4 style="color: var(--gradient-3);">Chrome DevTools</h4>
+                    <p>UI testing, E2E verification, performance traces, DOM snapshots.</p>
+                </div>
+                <div class="reveal glass-card">
+                    <h4 style="color: var(--gradient-4);">Exa</h4>
+                    <p>Web research for best practices, latest patterns, and solutions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 14: KEY TAKEAWAYS ==================== -->
+    <section class="slide" data-slide="13">
+        <div class="slide-inner">
+            <h2 class="reveal">Key <span class="gradient-text">Takeaways</span></h2>
+            <div class="reveal">
+                <ul style="font-size: 1.1rem;">
+                    <li><strong>Discipline beats speed</strong> — Upfront planning prevents costly rework</li>
+                    <li><strong>Small chunks, tight loops</strong> — LLMs excel on focused prompts</li>
+                    <li><strong>Context is king</strong> — Pack relevant context per task, not entire repos</li>
+                    <li><strong>Tests are safety nets</strong> — AI sounds confident even when wrong</li>
+                    <li><strong>Human accountability</strong> — Never commit what you can't explain</li>
+                    <li><strong>Automate the boring</strong> — Scripts and skills handle repetitive steps</li>
+                </ul>
+            </div>
+            <div class="reveal glass-card" style="margin-top: 2rem;">
+                <p style="color: var(--text-primary); font-size: 1.1rem;">
+                    <span class="accent">"Structure your AI workflow</span> before your AI structures your codebase."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 15: GET STARTED ==================== -->
+    <section class="slide" data-slide="14">
+        <div class="slide-inner" style="text-align: center;">
+            <h2 class="reveal"><span class="gradient-text">Get Started</span></h2>
+            <p class="reveal" style="margin: 0 auto 2rem;">Clone, configure, and start your first VibeCode session.</p>
+            <div class="reveal code-block" style="max-width: 600px; margin: 0 auto; text-align: left;">
+                <span class="comment"># Install requirements</span><br>
+                <span class="keyword">go install</span> github.com/steveyegge/beads/cmd/bd@latest<br>
+                <span class="keyword">pip install</span> gitingest<br><br>
+                <span class="comment"># Start a new task</span><br>
+                <span class="func">bd init</span> && <span class="func">bd ready</span><br><br>
+                <span class="comment"># Or with Claude Code native tasks</span><br>
+                <span class="string">/vibecode-lifecycle</span>
+            </div>
+            <div class="reveal" style="margin-top: 3rem;">
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Skills: <code>/skills/vibecode-lifecycle/SKILL.md</code>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         JAVASCRIPT: Presentation Controller
+         =========================================== -->
+    <script>
+        /* ===========================================
+           SLIDE PRESENTATION CONTROLLER
+           Handles navigation, animations, progress
+           =========================================== */
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.currentSlide = 0;
+                this.totalSlides = this.slides.length;
+                this.isAnimating = false;
+                this.touchStartY = 0;
+
+                this.init();
+            }
+
+            init() {
+                this.createNavDots();
+                this.setupIntersectionObserver();
+                this.bindEvents();
+                this.updateProgress();
+                // Initial slide visibility
+                this.slides[0].classList.add('visible');
+            }
+
+            createNavDots() {
+                const nav = document.getElementById('navDots');
+                for (let i = 0; i < this.totalSlides; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    nav.appendChild(dot);
+                }
+            }
+
+            setupIntersectionObserver() {
+                const options = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.5
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const slideIndex = parseInt(entry.target.dataset.slide);
+                            this.currentSlide = slideIndex;
+                            this.updateNavDots();
+                            this.updateProgress();
+                        }
+                    });
+                }, options);
+
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            bindEvents() {
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        this.prevSlide();
+                    }
+                });
+
+                // Touch support
+                document.addEventListener('touchstart', (e) => {
+                    this.touchStartY = e.touches[0].clientY;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const diff = this.touchStartY - touchEndY;
+
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) {
+                            this.nextSlide();
+                        } else {
+                            this.prevSlide();
+                        }
+                    }
+                }, { passive: true });
+            }
+
+            goToSlide(index) {
+                if (index >= 0 && index < this.totalSlides) {
+                    this.slides[index].scrollIntoView({ behavior: 'smooth' });
+                    this.currentSlide = index;
+                    this.updateNavDots();
+                    this.updateProgress();
+                }
+            }
+
+            nextSlide() {
+                if (this.currentSlide < this.totalSlides - 1) {
+                    this.goToSlide(this.currentSlide + 1);
+                }
+            }
+
+            prevSlide() {
+                if (this.currentSlide > 0) {
+                    this.goToSlide(this.currentSlide - 1);
+                }
+            }
+
+            updateNavDots() {
+                const dots = document.querySelectorAll('.nav-dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === this.currentSlide);
+                });
+            }
+
+            updateProgress() {
+                const progress = ((this.currentSlide + 1) / this.totalSlides) * 100;
+                document.getElementById('progress').style.width = `${progress}%`;
+            }
+        }
+
+        // Initialize presentation
+        document.addEventListener('DOMContentLoaded', () => {
+            new SlidePresentation();
+        });
+    </script>
+</body>
+</html>

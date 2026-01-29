@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeCode Lifecycle - Workflow Diagram</title>
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES
+           =========================================== */
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --gradient-1: #667eea;
+            --gradient-2: #764ba2;
+            --gradient-3: #f472b6;
+            --gradient-4: #06b6d4;
+            --gradient-5: #10b981;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border: rgba(255, 255, 255, 0.1);
+
+            --phase-discovery: #667eea;
+            --phase-planning: #764ba2;
+            --phase-execution: #f472b6;
+            --phase-review: #06b6d4;
+
+            --font-display: 'Cabinet Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        /* Background */
+        .gradient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 10% 90%, rgba(102, 126, 234, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 10%, rgba(118, 75, 162, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(244, 114, 182, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, var(--gradient-1) 50%, var(--gradient-3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Diagram Container */
+        .diagram-container {
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+            overflow-x: auto;
+            min-height: calc(100vh - 150px);
+        }
+
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 1400px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Phase Labels */
+        .phase-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .phase-label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 1rem 0.5rem;
+            border-radius: 8px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .phase-label.discovery {
+            background: linear-gradient(180deg, rgba(102, 126, 234, 0.2), rgba(102, 126, 234, 0.05));
+            color: var(--phase-discovery);
+            border-left: 3px solid var(--phase-discovery);
+        }
+
+        .phase-label.planning {
+            background: linear-gradient(180deg, rgba(118, 75, 162, 0.2), rgba(118, 75, 162, 0.05));
+            color: var(--phase-planning);
+            border-left: 3px solid var(--phase-planning);
+        }
+
+        .phase-label.execution {
+            background: linear-gradient(180deg, rgba(244, 114, 182, 0.2), rgba(244, 114, 182, 0.05));
+            color: var(--phase-execution);
+            border-left: 3px solid var(--phase-execution);
+        }
+
+        .phase-label.review {
+            background: linear-gradient(180deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.05));
+            color: var(--phase-review);
+            border-left: 3px solid var(--phase-review);
+        }
+
+        /* Steps Container */
+        .steps-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        /* Step Node */
+        .step {
+            position: relative;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            min-width: 160px;
+            max-width: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .step.discovery { border-color: rgba(102, 126, 234, 0.3); }
+        .step.discovery:hover { border-color: var(--phase-discovery); box-shadow: 0 0 30px rgba(102, 126, 234, 0.2); }
+
+        .step.planning { border-color: rgba(118, 75, 162, 0.3); }
+        .step.planning:hover { border-color: var(--phase-planning); box-shadow: 0 0 30px rgba(118, 75, 162, 0.2); }
+
+        .step.execution { border-color: rgba(244, 114, 182, 0.3); }
+        .step.execution:hover { border-color: var(--phase-execution); box-shadow: 0 0 30px rgba(244, 114, 182, 0.2); }
+
+        .step.review { border-color: rgba(6, 182, 212, 0.3); }
+        .step.review:hover { border-color: var(--phase-review); box-shadow: 0 0 30px rgba(6, 182, 212, 0.2); }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .step.discovery .step-number { background: linear-gradient(135deg, var(--phase-discovery), #818cf8); }
+        .step.planning .step-number { background: linear-gradient(135deg, var(--phase-planning), #a855f7); }
+        .step.execution .step-number { background: linear-gradient(135deg, var(--phase-execution), #fb7185); }
+        .step.review .step-number { background: linear-gradient(135deg, var(--phase-review), #22d3ee); }
+
+        .step-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+
+        .step-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Arrow Connectors */
+        .arrow {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .arrow svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .arrow.down {
+            transform: rotate(90deg);
+        }
+
+        /* Decision Diamond */
+        .decision {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+
+        .decision-diamond {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--phase-execution);
+            transform: rotate(45deg);
+            top: 15px;
+            left: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .decision-diamond:hover {
+            border-color: var(--gradient-3);
+            box-shadow: 0 0 30px rgba(244, 114, 182, 0.3);
+        }
+
+        .decision-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--phase-execution);
+            pointer-events: none;
+        }
+
+        /* Branch Labels */
+        .branch-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .branch-label.yes {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--gradient-5);
+        }
+
+        .branch-label.no {
+            background: rgba(244, 114, 182, 0.2);
+            color: var(--gradient-3);
+        }
+
+        /* Loop Indicator */
+        .loop-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .loop-bracket {
+            position: absolute;
+            right: -30px;
+            top: 0;
+            bottom: 0;
+            width: 25px;
+            border: 2px solid rgba(244, 114, 182, 0.3);
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .loop-label {
+            position: absolute;
+            right: -80px;
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg);
+            font-size: 0.7rem;
+            color: var(--phase-execution);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+        }
+
+        /* Vertical Flow Section */
+        .vertical-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 0;
+        }
+
+        .vertical-arrow {
+            color: var(--text-muted);
+            font-size: 1.25rem;
+        }
+
+        /* Execution Loop Box */
+        .execution-box {
+            background: rgba(244, 114, 182, 0.05);
+            border: 1px dashed rgba(244, 114, 182, 0.3);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .execution-box::before {
+            content: 'EXECUTION LOOP';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--bg-primary);
+            padding: 0 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--phase-execution);
+            letter-spacing: 0.1em;
+        }
+
+        /* End Node */
+        .end-node {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--gradient-5), #34d399);
+            border-radius: 100px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            z-index: 100;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+        }
+
+        .detail-panel.open {
+            right: 0;
+        }
+
+        .detail-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .detail-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+
+        .detail-close:hover {
+            color: var(--text-primary);
+        }
+
+        .detail-content {
+            padding: 1.5rem;
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-section h4 {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-section p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .detail-section ul {
+            list-style: none;
+        }
+
+        .detail-section li {
+            position: relative;
+            padding-left: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .detail-section li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--gradient-1);
+        }
+
+        .output-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.15);
+            color: var(--gradient-1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Legend */
+        .legend {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            display: flex;
+            gap: 1.5rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            z-index: 10;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+        }
+
+        .legend-dot.discovery { background: var(--phase-discovery); }
+        .legend-dot.planning { background: var(--phase-planning); }
+        .legend-dot.execution { background: var(--phase-execution); }
+        .legend-dot.review { background: var(--phase-review); }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .legend {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <header class="header">
+        <h1>VibeCode Lifecycle</h1>
+        <p>Click any step to see details</p>
+    </header>
+
+    <div class="diagram-container">
+        <div class="diagram">
+            <!-- ==================== DISCOVERY PHASE ==================== -->
+            <div class="phase-row">
+                <div class="phase-label discovery">Discovery</div>
+                <div class="steps-row">
+                    <div class="step discovery" data-step="0">
+                        <div class="step-number">0</div>
+                        <div class="step-title">Problem Statement</div>
+                        <div class="step-subtitle">Define boundaries</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="step discovery" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Outcome Discovery</div>
+                        <div class="step-subtitle">AI asks questions</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="step discovery" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Write spec.md</div>
+                        <div class="step-subtitle">Source of truth</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vertical-flow">
+                <div class="vertical-arrow">↓</div>
+            </div>
+
+            <!-- ==================== PLANNING PHASE ==================== -->
+            <div class="phase-row">
+                <div class="phase-label planning">Planning</div>
+                <div class="steps-row">
+                    <div class="step planning" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Generate plan.md</div>
+                        <div class="step-subtitle">Step-by-step tasks</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="step planning" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Critique & Refine</div>
+                        <div class="step-subtitle">Fix gaps & risks</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="step planning" data-step="5">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Set Guardrails</div>
+                        <div class="step-subtitle">rules.md</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vertical-flow">
+                <div class="vertical-arrow">↓</div>
+            </div>
+
+            <!-- ==================== EXECUTION PHASE ==================== -->
+            <div class="phase-row">
+                <div class="phase-label execution">Execution</div>
+                <div class="execution-box">
+                    <div class="steps-row" style="flex-wrap: wrap; gap: 1rem;">
+                        <div class="step execution" data-step="6">
+                            <div class="step-number">6</div>
+                            <div class="step-title">Select Step N</div>
+                            <div class="step-subtitle">Lock scope</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="step execution" data-step="7">
+                            <div class="step-number">7</div>
+                            <div class="step-title">Context Pack</div>
+                            <div class="step-subtitle">Relevant context only</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="step execution" data-step="8">
+                            <div class="step-number">8</div>
+                            <div class="step-title">Implement</div>
+                            <div class="step-subtitle">Small diff</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="step execution" data-step="9">
+                            <div class="step-number">9</div>
+                            <div class="step-title">Run Tests</div>
+                            <div class="step-subtitle">Verify changes</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="decision" data-step="10">
+                            <div class="decision-diamond"></div>
+                            <div class="decision-text">10<br>Green?</div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span class="branch-label no">NO</span>
+                                <div class="arrow">→</div>
+                                <div class="step execution" data-step="11">
+                                    <div class="step-number">11</div>
+                                    <div class="step-title">Debug Loop</div>
+                                    <div class="step-subtitle">Fix & re-run</div>
+                                </div>
+                                <div class="arrow" style="color: var(--phase-execution);">↩</div>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">back to 9</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span class="branch-label yes">YES</span>
+                                <div class="arrow">→</div>
+                                <span style="font-size: 0.85rem; color: var(--text-secondary);">Continue to Review →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vertical-flow">
+                <div class="vertical-arrow">↓</div>
+            </div>
+
+            <!-- ==================== REVIEW PHASE ==================== -->
+            <div class="phase-row">
+                <div class="phase-label review">Review</div>
+                <div class="steps-row">
+                    <div class="step review" data-step="12">
+                        <div class="step-number">12</div>
+                        <div class="step-title">Human Review</div>
+                        <div class="step-subtitle">Accountability gate</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="step review" data-step="13">
+                        <div class="step-number">13</div>
+                        <div class="step-title">Second Opinion</div>
+                        <div class="step-subtitle">Model review</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="step review" data-step="14">
+                        <div class="step-number">14</div>
+                        <div class="step-title">Commit</div>
+                        <div class="step-subtitle">Save point</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="decision" data-step="15">
+                        <div class="decision-diamond" style="border-color: var(--phase-review);"></div>
+                        <div class="decision-text" style="color: var(--phase-review);">15<br>More?</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="branch-label yes">YES</span>
+                            <div class="arrow" style="color: var(--phase-execution);">↩</div>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">back to Step 6</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="branch-label no">DONE</span>
+                            <div class="arrow">→</div>
+                            <div class="end-node">PR / Merge</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-dot discovery"></div>
+            <span>Discovery</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot planning"></div>
+            <span>Planning</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot execution"></div>
+            <span>Execution</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot review"></div>
+            <span>Review</span>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+            <div>
+                <div id="detailNumber" class="step-number" style="margin-bottom: 0.5rem;"></div>
+                <h3 id="detailTitle" style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;"></h3>
+            </div>
+            <button class="detail-close" id="closePanel">&times;</button>
+        </div>
+        <div class="detail-content">
+            <div class="detail-section">
+                <h4>What</h4>
+                <p id="detailWhat"></p>
+            </div>
+            <div class="detail-section">
+                <h4>Why</h4>
+                <p id="detailWhy"></p>
+            </div>
+            <div class="detail-section">
+                <h4>How</h4>
+                <ul id="detailHow"></ul>
+            </div>
+            <div class="detail-section">
+                <h4>Output</h4>
+                <div id="detailOutput"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ===========================================
+           STEP DATA
+           =========================================== */
+        const stepData = {
+            0: {
+                title: "Problem Statement",
+                phase: "discovery",
+                what: "Define the problem statement and boundaries in 1-3 clear sentences. This is where everything starts.",
+                why: "Prevents vague prompting that causes drift. A clear problem statement keeps AI focused and reduces hallucination.",
+                how: [
+                    "Identify the core issue or feature needed",
+                    "Define what's in scope and out of scope",
+                    "State success criteria in measurable terms",
+                    "Keep it concise: 1-3 sentences max"
+                ],
+                output: "Problem statement (1-3 sentences)"
+            },
+            1: {
+                title: "Outcome Discovery",
+                phase: "discovery",
+                what: "AI asks YOU questions until requirements, edge cases, constraints, and risks are crystal clear.",
+                why: "Forces shared understanding between human and AI. Reduces hallucination and expensive rework later.",
+                how: [
+                    "Prompt: 'Ask me questions until requirements are clear'",
+                    "Answer each question thoughtfully",
+                    "Clarify edge cases and invariants",
+                    "Document constraints and non-goals",
+                    "Identify potential risks early"
+                ],
+                output: "Requirements list + edge cases + invariants"
+            },
+            2: {
+                title: "Write spec.md",
+                phase: "discovery",
+                what: "Consolidate the Q&A into a formal spec.md document with requirements, architecture, data model, and test strategy.",
+                why: "Creates a stable 'source of truth' for all later steps. Both human and AI can reference it.",
+                how: [
+                    "AI drafts spec.md from Q&A session",
+                    "Human reviews and edits",
+                    "Include: requirements, architecture, data model",
+                    "Add test strategy and acceptance criteria",
+                    "Version control the spec"
+                ],
+                output: "spec.md"
+            },
+            3: {
+                title: "Generate plan.md",
+                phase: "planning",
+                what: "Break work into small, focused tasks with milestones and clear definition of done for each.",
+                why: "Enables chunking. LLMs perform best on focused prompts. You can understand and verify smaller outputs.",
+                how: [
+                    "Prompt: 'Read spec.md. Produce step-by-step plan'",
+                    "Each task should be completable in one session",
+                    "Define acceptance criteria per task",
+                    "Order tasks by dependencies",
+                    "Include milestones for progress tracking"
+                ],
+                output: "plan.md"
+            },
+            4: {
+                title: "Critique & Refine",
+                phase: "planning",
+                what: "Iteratively improve plan.md by critiquing for gaps, risks, and missing tests until it's coherent and complete.",
+                why: "Fix issues before code exists. Much cheaper than refactoring later. Catches what you missed.",
+                how: [
+                    "Prompt: 'Critique plan.md for gaps and risks'",
+                    "Improve sequencing and dependencies",
+                    "Add missing test cases per step",
+                    "Consider edge cases and failure modes",
+                    "Iterate until plan is solid"
+                ],
+                output: "Updated plan.md + test checklist per step"
+            },
+            5: {
+                title: "Set Guardrails",
+                phase: "planning",
+                what: "Create rules.md (or CLAUDE.md/GEMINI.md) with coding conventions, forbidden patterns, and project-specific guidance.",
+                why: "Consistent code + less drift. Reduces re-explaining every prompt. AI follows your standards.",
+                how: [
+                    "Define coding conventions and style",
+                    "List forbidden patterns and anti-patterns",
+                    "Add 'if unsure, ask' instructions",
+                    "Document how to run tests",
+                    "Include project-specific context"
+                ],
+                output: "rules.md"
+            },
+            6: {
+                title: "Select Step N",
+                phase: "execution",
+                what: "Choose one small task from plan.md: implement 1 function, fix 1 bug, add 1 feature. Lock scope for this iteration.",
+                why: "LLMs perform best on focused prompts. You can understand and verify the output. Prevents scope creep.",
+                how: [
+                    "Pick the next task from plan.md",
+                    "Verify dependencies are complete",
+                    "Create a 'task card' with goal + done criteria",
+                    "Keep scope small and focused",
+                    "Don't combine multiple tasks"
+                ],
+                output: "Task card (goal + done criteria)"
+            },
+            7: {
+                title: "Context Packing",
+                phase: "execution",
+                what: "Gather and provide relevant context for THIS task only: files, interfaces, constraints, pitfalls, docs.",
+                why: "Prevents AI guessing. Improves correctness. Saves tokens by focusing only on what's needed.",
+                how: [
+                    "Identify files to modify/reference",
+                    "Include relevant interfaces and types",
+                    "Add invariants and non-goals",
+                    "Use gitingest/repo2txt for code context",
+                    "Query Context7 MCP for live API docs",
+                    "Add known pitfalls to avoid"
+                ],
+                output: "context-pack.md"
+            },
+            8: {
+                title: "Implement",
+                phase: "execution",
+                what: "Generate/modify code for Step N only. Prompt includes spec.md refs + plan step + rules.md + context-pack.",
+                why: "Controlled change set. Easy to review. Small diffs are easier to verify and debug.",
+                how: [
+                    "Compose prompt with all context",
+                    "Reference spec.md for requirements",
+                    "Follow rules.md conventions",
+                    "Generate code for ONE task only",
+                    "Keep changes minimal and focused"
+                ],
+                output: "Code changes (small diff)"
+            },
+            9: {
+                title: "Run Tests",
+                phase: "execution",
+                what: "Execute verification gates: unit tests, lint, typecheck, build. Let automation catch issues.",
+                why: "AI 'sounds right' even when wrong. Tests are the safety net. Automated checks don't lie.",
+                how: [
+                    "Run unit tests",
+                    "Run linter (eslint, ruff, etc.)",
+                    "Run type checker (tsc, mypy, etc.)",
+                    "Run build to verify compilation",
+                    "Check test coverage if configured"
+                ],
+                output: "Pass/Fail logs"
+            },
+            10: {
+                title: "Green?",
+                phase: "execution",
+                what: "Decision point: Did all tests pass? If YES, proceed to human review. If NO, enter debug loop.",
+                why: "Gate that prevents broken code from moving forward. Forces fixing before proceeding.",
+                how: [
+                    "Check test results",
+                    "If GREEN → Step 12 (Human Review)",
+                    "If RED → Step 11 (Debug Loop)",
+                    "Don't skip failing tests",
+                    "Don't disable tests to pass"
+                ],
+                output: "Branch decision"
+            },
+            11: {
+                title: "Debug Loop",
+                phase: "execution",
+                what: "Paste failures + traces to AI. AI proposes fix. Re-run checks. Iterate until green.",
+                why: "AI excels at iterate→test→fix when given concrete error logs. Tight feedback loop.",
+                how: [
+                    "Copy full error message and stack trace",
+                    "Paste to AI with context",
+                    "AI proposes targeted fix",
+                    "Apply fix and re-run tests",
+                    "Repeat until all tests pass"
+                ],
+                output: "Updated code until green"
+            },
+            12: {
+                title: "Human Review",
+                phase: "review",
+                what: "Accountability gate. Can YOU explain it? Is it simple and maintainable? Would you approve this PR?",
+                why: "Human oversight prevents AI mistakes from shipping. You own the code, not the AI.",
+                how: [
+                    "Read every line of the diff",
+                    "Verify you understand the logic",
+                    "Check for simplicity and maintainability",
+                    "Look for security issues",
+                    "Request simplification if needed"
+                ],
+                output: "Approved diff (or request changes)"
+            },
+            13: {
+                title: "Second Opinion",
+                phase: "review",
+                what: "Optional: Different model critiques diffs and suggests improvements for quality, security, performance.",
+                why: "'Second opinion' catches what the first model missed. Different models have different blind spots.",
+                how: [
+                    "Use /code-review skill",
+                    "Or invoke code-reviewer agent",
+                    "Add security-reviewer for sensitive code",
+                    "Review suggestions critically",
+                    "Apply valuable improvements"
+                ],
+                output: "Review notes + patch suggestions"
+            },
+            14: {
+                title: "Commit",
+                phase: "review",
+                what: "Create a small commit with a clear message. Never commit what you can't explain.",
+                why: "Rollback safety net. Audit trail for AI changes. Clean git history aids debugging.",
+                how: [
+                    "Stage only related changes",
+                    "Write clear, descriptive commit message",
+                    "Reference task/issue if applicable",
+                    "Don't bundle unrelated changes",
+                    "Verify you can explain every line"
+                ],
+                output: "Clean git commit"
+            },
+            15: {
+                title: "Next Step?",
+                phase: "review",
+                what: "Decision: Are there more tasks in plan.md? If YES, loop back to Step 6. If DONE, create PR/Merge.",
+                why: "Maintains the discipline of the loop. Ensures all planned work is completed before shipping.",
+                how: [
+                    "Check plan.md for remaining tasks",
+                    "If more tasks → Go to Step 6",
+                    "If all done → Create Pull Request",
+                    "Run CI gates on PR",
+                    "Get human approval and merge"
+                ],
+                output: "Loop to Step 6 OR PR/Merge"
+            }
+        };
+
+        /* ===========================================
+           INTERACTION LOGIC
+           =========================================== */
+        const panel = document.getElementById('detailPanel');
+        const overlay = document.getElementById('overlay');
+        const closeBtn = document.getElementById('closePanel');
+
+        // Get all clickable steps
+        const steps = document.querySelectorAll('.step, .decision');
+
+        steps.forEach(step => {
+            step.addEventListener('click', () => {
+                const stepNum = parseInt(step.dataset.step);
+                const data = stepData[stepNum];
+                if (!data) return;
+
+                // Populate panel
+                document.getElementById('detailNumber').textContent = stepNum;
+                document.getElementById('detailNumber').className = `step-number ${data.phase}`;
+                document.getElementById('detailNumber').style.background =
+                    data.phase === 'discovery' ? 'linear-gradient(135deg, #667eea, #818cf8)' :
+                    data.phase === 'planning' ? 'linear-gradient(135deg, #764ba2, #a855f7)' :
+                    data.phase === 'execution' ? 'linear-gradient(135deg, #f472b6, #fb7185)' :
+                    'linear-gradient(135deg, #06b6d4, #22d3ee)';
+
+                document.getElementById('detailTitle').textContent = data.title;
+                document.getElementById('detailWhat').textContent = data.what;
+                document.getElementById('detailWhy').textContent = data.why;
+
+                const howList = document.getElementById('detailHow');
+                howList.innerHTML = data.how.map(item => `<li>${item}</li>`).join('');
+
+                document.getElementById('detailOutput').innerHTML =
+                    `<span class="output-badge">${data.output}</span>`;
+
+                // Open panel
+                panel.classList.add('open');
+                overlay.classList.add('open');
+            });
+        });
+
+        // Close panel
+        closeBtn.addEventListener('click', closePanel);
+        overlay.addEventListener('click', closePanel);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePanel();
+        });
+
+        function closePanel() {
+            panel.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+    </script>
+</body>
+</html>

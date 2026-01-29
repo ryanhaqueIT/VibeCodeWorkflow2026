@@ -1,0 +1,107 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/reload-state.py",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/inject-current-step.py",
+            "timeout": 3000
+          }
+        ]
+      }
+    ],
+
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/check-step-validation.py --action=edit",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": "Bash:*git commit*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/check-step-validation.py --action=commit",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": "Bash:*git push*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/check-step-validation.py --action=push",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "matcher": "Edit:*.py|Edit:*.ts|Edit:*.tsx|Edit:*.js",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/post-edit-verification.py",
+            "timeout": 30000
+          }
+        ]
+      },
+      {
+        "matcher": "TaskUpdate",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/sync-task-to-state.py",
+            "timeout": 3000
+          }
+        ]
+      }
+    ],
+
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/save-state-before-compact.py",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/save-session-state.py",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}
