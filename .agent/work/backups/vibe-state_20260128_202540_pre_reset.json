@@ -1,0 +1,39 @@
+{
+  "current_step": 14,
+  "current_bead_id": null,
+  "problem_statement": "",
+  "status": "initialized",
+  "verification": {
+    "tests_passed": true,
+    "lint_passed": false,
+    "last_check": "2026-01-28T20:14:09.495010"
+  },
+  "approvals": {
+    "spec_md": false,
+    "plan_md": false,
+    "human_review": true
+  },
+  "context": {
+    "context_pack_exists": true,
+    "task_selected": false
+  },
+  "session": {
+    "started_at": null,
+    "last_activity": "2026-01-28T20:14:40.089126",
+    "context_percentage": 0
+  },
+  "history": [
+    {
+      "timestamp": "2026-01-28T20:11:27.799943",
+      "message": "Step changed: 0 -> 8"
+    },
+    {
+      "timestamp": "2026-01-28T20:13:44.565538",
+      "message": "Step changed: 8 -> 14"
+    },
+    {
+      "timestamp": "2026-01-28T20:14:40.088074",
+      "message": "Human approval: granted"
+    }
+  ]
+}
